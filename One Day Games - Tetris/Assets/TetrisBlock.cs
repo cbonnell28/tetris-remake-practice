@@ -11,10 +11,32 @@ public class TetrisBlock : MonoBehaviour
     public static int width = 10;
     private static Transform[,] grid = new Transform[width, height];
 
+    public AudioSource source;
+    public AudioClip blockSound;
+    public AudioClip deleteLine;
+
     // Start is called before the first frame update
     void Start()
     {
 
+    }
+
+    private IEnumerator playBlockSound()
+    {
+        Debug.Log("Entered BlockSound");
+        source = GetComponent<AudioSource>();
+        source.clip = blockSound;
+        source.Play();
+        yield return new WaitForSeconds(source.clip.length);
+    }
+    private IEnumerator playDeleteSound()
+    {
+        Debug.Log("Entered DeleteSound");
+        source = GetComponent<AudioSource>();
+        source.clip = deleteLine;
+        source.volume = 0.25f;
+        source.Play();
+        yield return new WaitForSeconds(source.clip.length);
     }
 
     // Update is called once per frame
@@ -96,6 +118,7 @@ public class TetrisBlock : MonoBehaviour
             if (HasLine(i))
             {
                 DeleteLine(i);
+                StartCoroutine(playDeleteSound());
                 RowDown(i);
                 FindObjectOfType<SpawnTetromino>().UpdateScore();
                 FindObjectOfType<SpawnTetromino>().SetScoreText();
@@ -150,6 +173,7 @@ public class TetrisBlock : MonoBehaviour
 
             grid[roundedX, roundedY] = children;
         }
+        StartCoroutine(playBlockSound());
     }
 
     bool ValidMove()
