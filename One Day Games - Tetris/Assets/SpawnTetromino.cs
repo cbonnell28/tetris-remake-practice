@@ -12,6 +12,9 @@ public class SpawnTetromino : MonoBehaviour
     public Text endGameText;
     private int currentLevelScore;
 
+    public AudioSource source;
+    public AudioClip endGameSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +29,15 @@ public class SpawnTetromino : MonoBehaviour
     void update()
     {
 
+    }
+
+    private IEnumerator playEndGameSound()
+    {
+        Debug.Log("Entered BlockSound");
+        source = GetComponent<AudioSource>();
+        source.clip = endGameSound;
+        source.Play();
+        yield return new WaitForSeconds(source.clip.length);
     }
 
     public void checkLevelProgress()
@@ -65,6 +77,7 @@ public class SpawnTetromino : MonoBehaviour
 
     public void ShowEndGameScreen()
     {
+        StartCoroutine(playEndGameSound());
         endGameText.text = "Thanks for playing!\n" +
             "Your final score was: " + score;
     }
